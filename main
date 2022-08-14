@@ -1,0 +1,44 @@
+import re
+import sys
+
+
+def main():
+    print(convert(input("Hours: ")))
+
+
+def convert(s):
+    change_time = re.search('^(([0-9][0-2]*):*([0-5][0-9])*) ([A-P]M) to (([0-9][0-2]*):*([0-5][0-9])*) ([A-P]M)$', s)
+    if change_time:
+        time_piece = change_time.groups()
+
+        if int(time_piece[1]) > 12 or int(time_piece[5]) > 12:
+            raise ValueError
+        start_work = convert_time(time_piece[1], time_piece[2], time_piece[3])
+        end_work = convert_time(time_piece[5], time_piece[6], time_piece[7])
+        return start_work + ' to ' + end_work
+        
+    else:
+        raise ValueError
+
+
+def convert_time(hour, minute, am_pm):
+    if am_pm == 'PM':
+        if int(hour) == 12:
+            new_hour = 12
+        else:
+            new_hour = int(hour) + 12
+    else:
+        if int(hour) == 12:
+            new_hour = 0
+        else:
+            new_hour = int(hour)
+
+    if minute == None:
+        new_minute = ':00'
+        new_time = f'{new_hour:02}' + new_minute
+    else:
+        new_time = f'{new_hour:02}' + ':' + minute
+    return new_time
+
+if __name__ == "__main__":
+    main()
